@@ -1,0 +1,79 @@
+swagger: "2.0"
+info:
+  title: Car Rental API
+  version: 1.0.0
+  description: A simple API for managing car rentals.
+host: localhost:3000
+basePath: /
+schemes:
+  - http
+paths:
+  /cars:
+    get:
+      summary: Get a list of cars
+      responses:
+        '200':
+          description: A list of cars
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                id:
+                  type: integer
+                brand:
+                  type: string
+                year:
+                  type: integer
+                transmission:
+                  type: string
+                doors:
+                  type: integer
+                renter_dob:
+                  type: string
+                horsepower:
+                  type: integer
+                price:
+                  type: number
+                  format: float
+                status:
+                  type: string
+                variety:
+                  type: string
+  /cars/{id}:
+    get:
+      summary: Get a single car by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          type: integer
+      responses:
+        '200':
+          description: Details of a single car
+          schema:
+            type: object
+            properties:
+              id:
+                type: integer
+              brand:
+                type: string
+              year:
+                type: integer
+              transmission:
+                type: string
+              doors:
+                type: integer
+              renter_dob:
+                type: string
+              horsepower:
+                type: integer
+              price:
+                type: number
+                format: float
+              status:
+                type: string
+              variety:
+                type: string
+        '404':
+          description: Car not found

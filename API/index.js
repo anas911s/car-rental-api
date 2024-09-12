@@ -1,5 +1,8 @@
 const express = require('express');
 const app = express();
+const swaggerUi = require('swagger-ui-express');
+const YAML = require('yamljs');
+const path = require('path');
 const sequelize = require('./config/db');
 const carRoutes = require('./routes/cars');
 const userRoutes = require('./routes/users');
@@ -13,6 +16,9 @@ app.use('/users', userRoutes);
 app.get('/', (req, res) => {
   res.send('API werkt');
 });
+
+const swaggerDocument = YAML.load(path.join(__dirname, 'swagger.yaml'));
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 sequelize.sync().then(() => {
   app.listen(PORT, () => {
