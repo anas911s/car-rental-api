@@ -1,0 +1,45 @@
+const { DataTypes } = require('sequelize');
+const sequelize = require('../config/database');
+
+const Car = sequelize.define('Car', {
+  brand: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  year: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+  },
+  transmission: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  doors: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+  },
+  renter_dob: {
+    type: DataTypes.DATE,
+    allowNull: false,
+  },
+  horsepower: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+  },
+  price: {
+    type: DataTypes.DECIMAL(10, 2),
+    allowNull: false,
+  },
+  status: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  variety: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+}, {
+  timestamps: true,
+});
+
+module.exports = Car;
