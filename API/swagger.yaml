@@ -21,25 +21,36 @@ paths:
               properties:
                 id:
                   type: integer
+                  description: The unique identifier for the car
                 brand:
                   type: string
+                  description: The brand of the car
                 year:
                   type: integer
+                  description: The manufacturing year of the car
                 transmission:
                   type: string
+                  description: The type of transmission (e.g., automatic, manual)
                 doors:
                   type: integer
+                  description: The number of doors on the car
                 renter_dob:
                   type: string
+                  format: date-time
+                  description: The date of birth of the renter (minimum age requirement)
                 horsepower:
                   type: integer
+                  description: The horsepower of the car
                 price:
                   type: number
                   format: float
+                  description: The rental price of the car
                 status:
                   type: string
+                  description: The availability status of the car (e.g., available, rented)
                 variety:
                   type: string
+                  description: The variety or type of the car (e.g., SUV, sedan)
   /cars/{id}:
     get:
       summary: Get a single car by ID
@@ -48,6 +59,7 @@ paths:
           name: id
           required: true
           type: integer
+          description: The ID of the car to retrieve
       responses:
         '200':
           description: Details of a single car
@@ -56,24 +68,35 @@ paths:
             properties:
               id:
                 type: integer
+                description: The unique identifier for the car
               brand:
                 type: string
+                description: The brand of the car
               year:
                 type: integer
+                description: The manufacturing year of the car
               transmission:
                 type: string
+                description: The type of transmission (e.g., automatic, manual)
               doors:
                 type: integer
+                description: The number of doors on the car
               renter_dob:
                 type: string
+                format: date-time
+                description: The date of birth of the renter (minimum age requirement)
               horsepower:
                 type: integer
+                description: The horsepower of the car
               price:
                 type: number
                 format: float
+                description: The rental price of the car
               status:
                 type: string
+                description: The availability status of the car (e.g., available, rented)
               variety:
                 type: string
+                description: The variety or type of the car (e.g., SUV, sedan)
         '404':
           description: Car not found

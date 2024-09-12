@@ -19,7 +19,7 @@ const Car = sequelize.define('Car', {
     allowNull: false,
   },
   renter_dob: {
-    type: DataTypes.DATE,
+    type: DataTypes.INTEGER,
     allowNull: false,
   },
   horsepower: {
