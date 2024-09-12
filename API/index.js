@@ -1,5 +1,6 @@
 const express = require('express');
 const app = express();
+const cors = require('cors');
 const swaggerUi = require('swagger-ui-express');
 const YAML = require('yamljs');
 const path = require('path');
@@ -7,6 +8,10 @@ const sequelize = require('./config/db');
 const carRoutes = require('./routes/cars');
 const userRoutes = require('./routes/users');
 const PORT = 3000;
+
+app.use(cors({
+  origin: 'http://localhost:8081'
+}));
 
 app.use(express.json());
 
