@@ -16,7 +16,7 @@ app.use(cors({
 app.use(express.json());
 
 app.use('/cars', carRoutes);
-app.use('/users', userRoutes);
+app.use('/api/users', userRoutes);
 
 app.get('/', (req, res) => {
   res.send('API werkt');
