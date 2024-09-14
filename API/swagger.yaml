@@ -2,7 +2,7 @@ swagger: "2.0"
 info:
   title: Car Rental API
   version: 1.0.0
-  description: A simple API for managing car rentals.
+  description: A simple API for managing car rentals and user authentication.
 host: localhost:3000
 basePath: /
 schemes:
@@ -100,3 +100,106 @@ paths:
                 description: The variety or type of the car (e.g., SUV, sedan)
         '404':
           description: Car not found
+
+  /register:
+    post:
+      summary: Register a new user
+      description: Creates a new user with a username and password.
+      parameters:
+        - in: body
+          name: body
+          description: User registration details
+          schema:
+            type: object
+            properties:
+              username:
+                type: string
+                example: "john_doe"
+                description: The username for the new user.
+              password:
+                type: string
+                example: "password123"
+                description: The password for the new user.
+      responses:
+        '201':
+          description: User registered successfully
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: "User registered successfully"
+        '400':
+          description: Bad Request
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+        '409':
+          description: Username already taken
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+        '500':
+          description: Internal Server Error
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+
+  /login:
+    post:
+      summary: Log in a user
+      description: Authenticates a user with username and password and returns a JWT token.
+      parameters:
+        - in: body
+          name: body
+          description: User login details
+          schema:
+            type: object
+            properties:
+              username:
+                type: string
+                example: "john_doe"
+                description: The username for the user.
+              password:
+                type: string
+                example: "password123"
+                description: The password for the user.
+      responses:
+        '200':
+          description: Login successful
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: "Login successful"
+              token:
+                type: string
+                description: The JWT token.
+        '400':
+          description: Bad Request
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+        '401':
+          description: Invalid credentials
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+        '500':
+          description: Internal Server Error
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
