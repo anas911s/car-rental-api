@@ -14,14 +14,16 @@ const User = sequelize.define('User', {
   },
   dob: {
     type: DataTypes.DATE,
-    allowNull: false,
+    allowNull: true,
   },
 }, {
   timestamps: true,
 });
 
 User.beforeCreate(async (user) => {
-  user.password = await bcrypt.hash(user.password, 10);
+    if (!user.password.startsWith('$2b$')) {
+     user.password = await bcrypt.hash(user.password, 10);
+    }
 });
 
 module.exports = User;

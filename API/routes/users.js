@@ -7,52 +7,59 @@ const jwt = require('jsonwebtoken');
 const JWT_SECRET = process.env.JWT_SECRET || 'anas_911';
 const JWT_EXPIRATION = process.env.JWT_EXPIRATION || '1h';
 
-router.post('/register', async (req, res) => {
-  const { username, password } = req.body;
-
-  if (!username || !password) {
-    return res.status(400).json({ error: 'Username and password are required' });
-  }
-
-  try {
-    const existingUser = await User.findOne({ where: { username } });
-    if (existingUser) {
-      return res.status(409).json({ error: 'Username is already taken' });
+  router.post('/register', async (req, res) => {
+    const { username, password } = req.body;
+  
+    if (!username || !password) {
+      return res.status(400).json({ error: 'Username and password are required' });
     }
+  
+    try {
+      const existingUser = await User.findOne({ where: { username } });
+      if (existingUser) {
+        return res.status(409).json({ error: 'Username is already taken' });
+      }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const user = await User.create({ username, password: hashedPassword });
+      const salt = await bcrypt.genSalt(10);
 
-    res.status(201).json({ message: 'User registered successfully', user });
-  } catch (error) {
-    res.status(500).json({ error: 'An error occurred during registration' });
-  }
-});
+      const hashedPassword = await bcrypt.hash(password, salt);  
+      const user = await User.create({ username, password: hashedPassword });
+      
+      res.status(201).json({ message: 'User registered successfully' });
+    } catch (error) {
+      console.error('Error during registration:', error);
+      res.status(500).json({ error: 'An error occurred during registration' });
+    }
+  });
+  
 
 router.post('/login', async (req, res) => {
-  const { username, password } = req.body;
-
-  if (!username || !password) {
-    return res.status(400).json({ error: 'Username and password are required' });
-  }
-
-  try {
-    const user = await User.findOne({ where: { username } });
-    if (!user) {
-      return res.status(401).json({ error: 'Invalid credentials' });
+    const { username, password } = req.body;
+  
+    if (!username || !password) {
+      return res.status(400).json({ error: 'Username and password are required' });
     }
-
-    const isPasswordValid = await bcrypt.compare(password, user.password);
-    if (!isPasswordValid) {
-      return res.status(401).json({ error: 'Invalid credentials' });
+  
+    try {
+      const user = await User.findOne({ where: { username } });
+      if (!user) {
+        return res.status(401).json({ error: 'Invalid credentials' });
+      }
+  
+      const isPasswordValid = await bcrypt.compare(password, user.password);
+      console.log('Is Password Valid:', isPasswordValid);
+  
+      if (!isPasswordValid) {
+        return res.status(401).json({ error: 'Invalid credentials' });
+      }
+  
+      const token = jwt.sign({ id: user.id, username: user.username }, JWT_SECRET, { expiresIn: JWT_EXPIRATION });
+  
+      res.json({ message: 'Login successful'});
+    } catch (error) {
+      console.error('Error during login:', error);
+      res.status(500).json({ error: 'An error occurred during login' });
     }
-
-    const token = jwt.sign({ id: user.id, username: user.username }, JWT_SECRET, { expiresIn: JWT_EXPIRATION });
-
-    res.json({ message: 'Login successful', token });
-  } catch (error) {
-    res.status(500).json({ error: 'An error occurred during login' });
-  }
 });
 
 module.exports = router;
