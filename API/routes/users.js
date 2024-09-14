@@ -33,32 +33,45 @@ const JWT_EXPIRATION = process.env.JWT_EXPIRATION || '1h';
   });
   
 
-router.post('/login', async (req, res) => {
+  router.post('/login', async (req, res) => {
     const { username, password } = req.body;
-  
+
     if (!username || !password) {
-      return res.status(400).json({ error: 'Username and password are required' });
+        return res.status(400).json({ error: 'Username and password are required' });
     }
-  
+
     try {
-      const user = await User.findOne({ where: { username } });
-      if (!user) {
-        return res.status(401).json({ error: 'Invalid credentials' });
-      }
-  
-      const isPasswordValid = await bcrypt.compare(password, user.password);
-      console.log('Is Password Valid:', isPasswordValid);
-  
-      if (!isPasswordValid) {
-        return res.status(401).json({ error: 'Invalid credentials' });
-      }
-  
-      const token = jwt.sign({ id: user.id, username: user.username }, JWT_SECRET, { expiresIn: JWT_EXPIRATION });
-  
-      res.json({ message: 'Login successful'});
+        const user = await User.findOne({ where: { username } });
+
+
+        if (!user) {
+            return res.status(401).json({ error: 'Invalid credentials' });
+        }
+
+
+        const isPasswordValid = await bcrypt.compare(password, user.password);
+        console.log('Is Password Valid:', isPasswordValid);
+
+
+        if (!isPasswordValid) {
+            return res.status(401).json({ error: 'Invalid credentials' });
+        }
+
+
+        const token = jwt.sign({ id: user.id, username: user.username }, JWT_SECRET, { expiresIn: JWT_EXPIRATION });
+
+
+        res.json({
+            token,
+            user: {
+                id: user.id,
+                username: user.username,
+            },
+            message: 'Login successful'
+        });
     } catch (error) {
-      console.error('Error during login:', error);
-      res.status(500).json({ error: 'An error occurred during login' });
+        console.error('Error during login:', error);
+        res.status(500).json({ error: 'An error occurred during login' });
     }
 });
 
