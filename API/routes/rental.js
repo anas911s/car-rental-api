@@ -6,38 +6,48 @@ const Rental = require('../models/Rental');
 const authenticateJWT = require('../routes/authenticateJWT');
 
 router.post('/rentals', authenticateJWT, async (req, res) => {
-  try {
-    const { carId } = req.body;
-    const user = req.user;
+    try {
+      const { carId } = req.body;
+      const user = req.user;
+  
+      if (!carId) {
+        return res.status(400).json({ error: 'Geen id' });
+      }
+  
+      const car = await Car.findByPk(carId);
+      if (!car) {
+        return res.status(404).json({ error: 'Auto niet gevonden' });
+      }
+  
+      if (car.status === 'false') {
+        return res.status(400).json({ error: 'Auto is niet beschikbaar' });
+      }
+  
+      await Rental.create({
+        carId: car.id,
+        userId: user.id,
+        rentDate: new Date(),
+      });
 
-    if (!carId) {
-      return res.status(400).json({ error: 'Geen id' });
+      if(!car.variety == 0) {
+      const updatedVariety = car.variety - 1;
+      await car.update({ variety: updatedVariety });
+      }
+      
+      if (car.variety === 0) {
+        await car.update({ status: 'false' });
+      }
+      if (car.variety > 0) {
+        await car.update({ status: 'true' });
+        res.status(200).json({ message: 'Succesvol gehuurd' });
+      }
+
+    } catch (error) {
+      console.error('Error during rental:', error);
+      res.status(500).json({ error: 'An error occurred during the rental process' });
     }
-
-    const car = await Car.findByPk(carId);
-    if (!car) {
-      return res.status(404).json({ error: 'Auto niet gevonden' });
-    }
-
-    if (car.status == 'true') {
-      return res.status(400).json({ error: 'Auto is niet beschikbaar' });
-    }
-    await Rental.create({
-      carId: car.id,
-      userId: user.id,
-      rentDate: new Date(),
-    });
-
-    // deze ga ik nog fixxen
-    await car.update({ status: 'false' });
-
-    res.status(200).json({ message: 'Succesvol gehuurd' });
-
-  } catch (error) {
-    console.error('Error during rental:', error);
-    res.status(500).json({ error: 'An error occurred during the rental process' });
-  }
-});
+  });
+  
 
 router.get('/user/:userId', async (req, res) => {
     try {

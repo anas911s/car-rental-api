@@ -6,6 +6,9 @@ router.get('/', async (req, res) => {
     try {
       const cars = await Car.findAll();
       res.json(cars);
+      if (cars.variety > 0) {
+        await cars.update({ status: 'true' });
+      }
     } catch (error) {
       res.status(500).json({ error: error.message });
     }
