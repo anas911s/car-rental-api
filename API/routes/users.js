@@ -8,24 +8,24 @@ const JWT_SECRET = process.env.JWT_SECRET || 'anas_911';
 const JWT_EXPIRATION = process.env.JWT_EXPIRATION || '1h';
 
   router.post('/register', async (req, res) => {
-    const { username, password } = req.body;
+    const { username, password, email } = req.body;
   
-    if (!username || !password) {
-      return res.status(400).json({ error: 'Username and password are required' });
+    if (!username || !password || !email ) {
+      return res.status(400).json({ error: 'Vul alle velden in' });
     }
   
     try {
       const existingUser = await User.findOne({ where: { username } });
       if (existingUser) {
-        return res.status(409).json({ error: 'Username is already taken' });
+        return res.status(409).json({ error: 'Username bestaat al' });
       }
 
       const salt = await bcrypt.genSalt(10);
 
       const hashedPassword = await bcrypt.hash(password, salt);  
-      const user = await User.create({ username, password: hashedPassword });
+      const user = await User.create({ username, password: hashedPassword, email });
       
-      res.status(201).json({ message: 'User registered successfully' });
+      res.status(201).json({ message: 'User succesvol geregistreerd' });
     } catch (error) {
       console.error('Error during registration:', error);
       res.status(500).json({ error: 'An error occurred during registration' });

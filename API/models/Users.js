@@ -17,7 +17,7 @@ const User = sequelize.define('User', {
     allowNull: false,
   },
   dob: {
-    type: DataTypes.DATE,
+    type: DataTypes.STRING,
     allowNull: true,
   },
 }, {
