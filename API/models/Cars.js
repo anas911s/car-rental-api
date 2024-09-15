@@ -36,7 +36,7 @@ const Car = sequelize.define('Car', {
     allowNull: false,
   },
   variety: {
-    type: DataTypes.STRING,
+    type: DataTypes.INTEGER,
     allowNull: false,
   },
   image: {

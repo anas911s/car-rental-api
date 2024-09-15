@@ -89,12 +89,12 @@ router.delete('/user/delete/:id', authenticateJWT, async (req, res) => {
         if (!car) {
             return res.status(404).json({ error: 'Auto niet gevonden' });
         }
-
-        await rental.destroy();
-
-
-            const updatedVariety = car.variety + 1;
+        let currentVariety = Number(car.variety);
+        if (currentVariety !== null) {
+            const updatedVariety = currentVariety + 1;
             await car.update({ variety: updatedVariety });
+        }
+        await rental.destroy();
 
         if (car.variety > 0) {
             await car.update({ status: 'true' });
