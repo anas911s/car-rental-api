@@ -33,7 +33,7 @@ router.post('/rentals', authenticateJWT, async (req, res) => {
       const updatedVariety = car.variety - 1;
       await car.update({ variety: updatedVariety });
       }
-      
+
       if (car.variety === 0) {
         await car.update({ status: 'false' });
       }
@@ -69,5 +69,45 @@ router.get('/user/:userId', async (req, res) => {
       return res.status(500).json({ error: 'Failed to fetch rentals.' });
     }
   });
+
+router.delete('/user/delete/:id', authenticateJWT, async (req, res) => {
+    try {
+        const rentalId = req.params.id;
+        const user = req.user;
+
+        const rental = await Rental.findByPk(rentalId);
+        if (!rental) {
+            return res.status(404).json({ error: 'Huurboeking niet gevonden' });
+        }
+
+        console.log(rentalId);
+        if (rental.userId !== user.id) {
+            return res.status(403).json({ error: 'Geen toegang om deze huurboeking te annuleren' });
+        }
+
+        const car = await Car.findByPk(rental.carId);
+        if (!car) {
+            return res.status(404).json({ error: 'Auto niet gevonden' });
+        }
+
+        await rental.destroy();
+
+
+            const updatedVariety = car.variety + 1;
+            await car.update({ variety: updatedVariety });
+
+        if (car.variety > 0) {
+            await car.update({ status: 'true' });
+        } else {
+            await car.update({ status: 'false' });
+        }
+
+        res.status(200).json({ message: 'Huurboeking succesvol geannuleerd' });
+    } catch (error) {
+        console.error('Error during cancellation:', error);
+        res.status(500).json({ error: 'An error occurred during the cancellation process' });
+    }
+});
+
 
 module.exports = router;
