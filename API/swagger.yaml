@@ -4,10 +4,61 @@ info:
   version: 1.0.0
   description: A simple API for managing car rentals and user authentication.
 host: localhost:3000
-basePath: /
+basePath: /api
 schemes:
   - http
 paths:
+  /users/{id}:
+    get:
+      summary: Get user details
+      description: Fetches details of a user by their ID. The response excludes sensitive information like passwords.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          type: integer
+          description: Unique identifier of the user
+      responses:
+        '200':
+          description: Successful response with user details
+          schema:
+            type: object
+            properties:
+              id:
+                type: integer
+                description: User ID
+                example: 1
+              username:
+                type: string
+                description: Username of the user
+                example: johndoe
+              createdAt:
+                type: string
+                format: date-time
+                description: The date when the user was created
+                example: "2023-09-15T08:53:20.123Z"
+              updatedAt:
+                type: string
+                format: date-time
+                description: The date when the user was last updated
+                example: "2023-09-15T09:05:20.123Z"
+        '404':
+          description: User not found
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: "Not found"
+        '500':
+          description: Internal server error
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: "An error occurred while fetching user details"
+
   /cars:
     get:
       summary: Get a list of cars
@@ -51,6 +102,7 @@ paths:
                 variety:
                   type: string
                   description: The variety or type of the car (e.g., SUV, sedan)
+
   /cars/{id}:
     get:
       summary: Get a single car by ID
@@ -203,233 +255,3 @@ paths:
             properties:
               error:
                 type: string
-
-openapi: 3.0.0
-info:
-  title: Car Rental API
-  description: API for managing car rentals.
-  version: 1.0.0
-servers:
-  - url: http://localhost:3000/api
-    description: Development server
-
-paths:
-  /rentals:
-    post:
-      summary: Create a new rental
-      description: Rent a car by specifying the car ID. The car status will be updated to unavailable.
-      tags:
-        - Rentals
-      requestBody:
-        description: Car ID to rent
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                carId:
-                  type: integer
-                  description: ID of the car to be rented
-                  example: 1
-      responses:
-        '200':
-          description: Rental successfully created
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: Successfully rented
-        '400':
-          description: Bad request, car ID is missing or car is not available
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    example: Car is not available
-        '404':
-          description: Car not found
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    example: Car not found
-        '500':
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    example: An error occurred during the rental process
-
-  /user/{userId}:
-    get:
-      summary: Get rentals for a user
-      description: Retrieve a list of rentals for a specific user by user ID.
-      tags:
-        - Rentals
-      parameters:
-        - name: userId
-          in: path
-          required: true
-          description: ID of the user to retrieve rentals for
-          schema:
-            type: integer
-            example: 1
-      responses:
-        '200':
-          description: List of rentals for the specified user
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    id:
-                      type: integer
-                      description: Rental ID
-                    car:
-                      type: object
-                      properties:
-                        brand:
-                          type: string
-                          description: Brand of the car
-                        year:
-                          type: integer
-                          description: Year of the car
-                        transmission:
-                          type: string
-                          description: Transmission type
-                        doors:
-                          type: integer
-                          description: Number of doors
-                        horsepower:
-                          type: integer
-                          description: Horsepower of the car
-                        price:
-                          type: number
-                          format: decimal
-                          description: Rental price
-                        status:
-                          type: string
-                          description: Availability status of the car
-                        variety:
-                          type: string
-                          description: Car variety
-                        image:
-                          type: string
-                          description: URL of the car image
-                        location:
-                          type: string
-                          description: Location of the car
-        '404':
-          description: No rentals found for the user
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: No rentals found
-        '500':
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    example: Failed to fetch rentals
-
-openapi: 3.0.0
-info:
-  version: 1.0.0
-  title: User API
-  description: API for fetching user details
-servers:
-  - url: http://localhost:3000/api
-    description: Local server
-paths:
-  /users/{id}:
-    get:
-      summary: Get user details
-      description: Fetches details of a user by their ID. The response excludes sensitive information like passwords.
-      parameters:
-        - in: path
-          name: id
-          schema:
-            type: integer
-          required: true
-          description: Unique identifier of the user
-      responses:
-        '200':
-          description: Successful response with user details
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  id:
-                    type: integer
-                    example: 1
-                  username:
-                    type: string
-                    example: johndoe
-                  createdAt:
-                    type: string
-                    format: date-time
-                    example: 2023-09-15T08:53:20.123Z
-                  updatedAt:
-                    type: string
-                    format: date-time
-                    example: 2023-09-15T09:05:20.123Z
-        '404':
-          description: User not found
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    example: Not found
-        '500':
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    example: An error occurred while fetching user details
-components:
-  schemas:
-    User:
-      type: object
-      properties:
-        id:
-          type: integer
-        username:
-          type: string
-        createdAt:
-          type: string
-          format: date-time
-        updatedAt:
-          type: string
-          format: date-time
