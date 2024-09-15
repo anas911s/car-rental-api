@@ -355,3 +355,81 @@ paths:
                   error:
                     type: string
                     example: Failed to fetch rentals
+
+openapi: 3.0.0
+info:
+  version: 1.0.0
+  title: User API
+  description: API for fetching user details
+servers:
+  - url: http://localhost:3000/api
+    description: Local server
+paths:
+  /users/{id}:
+    get:
+      summary: Get user details
+      description: Fetches details of a user by their ID. The response excludes sensitive information like passwords.
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: Unique identifier of the user
+      responses:
+        '200':
+          description: Successful response with user details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    example: 1
+                  username:
+                    type: string
+                    example: johndoe
+                  createdAt:
+                    type: string
+                    format: date-time
+                    example: 2023-09-15T08:53:20.123Z
+                  updatedAt:
+                    type: string
+                    format: date-time
+                    example: 2023-09-15T09:05:20.123Z
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Not found
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: An error occurred while fetching user details
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+        username:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
