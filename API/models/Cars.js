@@ -1,5 +1,6 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/db');
+const Rental = require('../models/Rental');
 
 const Car = sequelize.define('Car', {
   brand: {
@@ -50,5 +51,8 @@ const Car = sequelize.define('Car', {
 }, {
   timestamps: true,
 });
+
+Rental.belongsTo(Car, { foreignKey: 'carId' });
+Car.hasMany(Rental, { foreignKey: 'carId' });
 
 module.exports = Car;

@@ -1,6 +1,7 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/db');
 const User = require('../models/Users');
+const Car = require('../models/Cars');
 
 const Rental = sequelize.define('Rentals', {
   carId: {

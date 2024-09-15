@@ -203,3 +203,155 @@ paths:
             properties:
               error:
                 type: string
+
+openapi: 3.0.0
+info:
+  title: Car Rental API
+  description: API for managing car rentals.
+  version: 1.0.0
+servers:
+  - url: http://localhost:3000/api
+    description: Development server
+
+paths:
+  /rentals:
+    post:
+      summary: Create a new rental
+      description: Rent a car by specifying the car ID. The car status will be updated to unavailable.
+      tags:
+        - Rentals
+      requestBody:
+        description: Car ID to rent
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                carId:
+                  type: integer
+                  description: ID of the car to be rented
+                  example: 1
+      responses:
+        '200':
+          description: Rental successfully created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Successfully rented
+        '400':
+          description: Bad request, car ID is missing or car is not available
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Car is not available
+        '404':
+          description: Car not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Car not found
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: An error occurred during the rental process
+
+  /user/{userId}:
+    get:
+      summary: Get rentals for a user
+      description: Retrieve a list of rentals for a specific user by user ID.
+      tags:
+        - Rentals
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          description: ID of the user to retrieve rentals for
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: List of rentals for the specified user
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      description: Rental ID
+                    car:
+                      type: object
+                      properties:
+                        brand:
+                          type: string
+                          description: Brand of the car
+                        year:
+                          type: integer
+                          description: Year of the car
+                        transmission:
+                          type: string
+                          description: Transmission type
+                        doors:
+                          type: integer
+                          description: Number of doors
+                        horsepower:
+                          type: integer
+                          description: Horsepower of the car
+                        price:
+                          type: number
+                          format: decimal
+                          description: Rental price
+                        status:
+                          type: string
+                          description: Availability status of the car
+                        variety:
+                          type: string
+                          description: Car variety
+                        image:
+                          type: string
+                          description: URL of the car image
+                        location:
+                          type: string
+                          description: Location of the car
+        '404':
+          description: No rentals found for the user
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: No rentals found
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Failed to fetch rentals
